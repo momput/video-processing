@@ -43,7 +43,7 @@ This project is designed to run within a Dockerized environment, using `docker-c
 
 1.  **Clone the repository:**
     ```bash
-    git clone video-processor
+    git clone https://github.com/momput/video-processing.git
     cd video-processor
     ```
 
