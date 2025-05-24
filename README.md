@@ -32,9 +32,10 @@ It uses Redis for checkpointing to enable resumable uploads and to track the pro
 * `stream_monitor.py`: A separate thread that periodically checks the status of active video streams in Redis to determine if they are fully uploaded and then finalizes their processing (e.g., uploading metadata).
 
 ** Known Issues **
-* Bucket needs to be created in minio manually
-* Did not get to Prometheus monitoring
+* Bucket needs to be created in minio manually (priority)
+* Did not get to Prometheus monitoring (priority)
 * Monitor that writes the JSON/finalizes the code cannot resume finalizing if an error occurs (Bug)
+* Update to file after "finalizing" stream as complete will amount to re-write. (by-design)
 
 ## Setup and Installation
 
