@@ -12,10 +12,14 @@ logging.basicConfig(
 
 # Entry point - infinite loop watching for events in a folder defined in config.settings
 def main():
-    try: 
+    try:
+        # CheckpointManager uses redis to manage upload state 
         checkpoint = CheckpointManager()
+        # ChunkUploader handles uploading small chunks of the video to minIO
         uploader = ChunkUploader()
+        # StreamMonitor checks file upload state to figure out if the the processing is complete
         StreamMonitor(checkpoint, uploader)
+        # VideoEventHandler responds to Watchdog's specific events oncreate/onupdate
         video_event_handler = VideoEventHandler(checkpoint, uploader)
         observer = Observer()
         observer.schedule(video_event_handler, settings.WATCH_DIR, recursive=False)
