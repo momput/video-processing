@@ -1,0 +1,4 @@
+watchdog>=2.1.6
+boto3>=1.26.0
+redis>=4.3.5
+python-dotenv>=0.21.0
