@@ -12,13 +12,20 @@ import time
 
 class ChunkUploader:
     def __init__(self):
-        self.s3 = boto3.client(
-            's3',
-            endpoint_url=settings.S3_ENDPOINT,
-            aws_access_key_id=settings.S3_ACCESS_KEY,
-            aws_secret_access_key=settings.S3_SECRET_KEY,
-            config=Config(retries={'max_attempts': 3})
-        )
+        if settings.S3_ENDPOINT:
+            self.s3 = boto3.client(
+                's3',
+                endpoint_url=settings.S3_ENDPOINT,
+                aws_access_key_id=settings.S3_ACCESS_KEY,
+                aws_secret_access_key=settings.S3_SECRET_KEY,
+                config=Config(retries={'max_attempts': 3})
+            )
+        else:
+            # For AWS S3, omit endpoint_url and credentials (use IAM or environment)
+            self.s3 = boto3.client(
+                's3',
+                config=Config(retries={'max_attempts': 3})
+            )
 
     def upload_file(self, file_path, checkpoint, max_s3_retries=5, s3_retry_delay=5):        
         for attempt in range(max_s3_retries):
