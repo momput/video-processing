@@ -208,7 +208,7 @@ def get_minio_health():
         if chunk_uploader and chunk_uploader.s3:
             # Test basic connectivity by listing buckets
             start_time = time.time()
-            chunk_uploader.s3.list_buckets()
+            chunk_uploader.s3.head_bucket(Bucket=settings.S3_BUCKET)
             response_time = (time.time() - start_time) * 1000
             
             return {

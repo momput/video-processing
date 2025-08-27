@@ -12,8 +12,27 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
+def validate_s3_bucket():
+    """Validate that the required S3 bucket exists before starting service"""
+    logging.info("In validate s3 bucket")
+    print("print In validate s3 bucket")
+    try:
+        uploader = ChunkUploader()
+        uploader.s3.head_bucket(Bucket=settings.S3_BUCKET)
+        logging.info(f"S3 bucket validation successful: {settings.S3_BUCKET}")
+        return True
+    except Exception as e:
+        logging.critical(f"S3 bucket validation failed: {settings.S3_BUCKET} - {str(e)}")
+        logging.critical("Service cannot start without S3 bucket access")
+        return False
+
 def main():
     try:
+        # Validate S3 bucket exists before starting service
+        if not validate_s3_bucket():
+            logging.critical("Exiting due to S3 bucket validation failure")
+            exit(1)
+
         # CheckpointManager uses redis to manage upload state 
         checkpoint = CheckpointManager()
         # ChunkUploader handles uploading small chunks of the video to minIO
@@ -23,7 +42,7 @@ def main():
         
         # Initialize and start admin API
         admin_thread = initialize_and_start_admin_api(checkpoint, uploader, stream_monitor)
-        logging.info("Admin API started successfully")
+        logging.info("Admin API started successfully .. v2")
         
         # VideoEventHandler responds to Watchdog's specific events oncreate/onupdate
         video_event_handler = VideoEventHandler(checkpoint, uploader)
